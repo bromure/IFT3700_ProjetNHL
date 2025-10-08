@@ -9,9 +9,7 @@ NHL data driven model
 
 This project explores **public NHL play-by-play and player statistics data**. 
 
-  ---------------------------- MILESTONE 1 ----------------------------
-
-# NHL Data Exploration and Visualization
+# Milestone 1: NHL Data Exploration and Visualization
 
 The focus is on **data wrangling**, **exploratory data analysis (EDA)**, and building **visualizations** (both simple and interactive) to better understand trends in hockey performance.
 
@@ -34,8 +32,8 @@ This project demonstrates skills in:
 
 ### Requirements
 - Python 3.9+  
-- `pip` or `conda`  
-- Web browser for viewing results  
+- `pip` or `conda`
+- Web browser for viewing results
 
 ## Project Organization
 
