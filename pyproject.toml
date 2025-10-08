@@ -7,7 +7,9 @@ name = "Visualisation"
 version = "0.0.1"
 description = "NHL data driven model"
 authors = [
-  { name = "Alexis Archambault Xavier Drolet Hung Nguyen Cao" },
+  { name = "Alexis Archambault" },
+  { name = "Xavier Drolet" },
+  { name = "Hung Nguyen Cao" },
 ]
 
 readme = "README.md"

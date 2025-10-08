@@ -7,6 +7,10 @@ These directions are based on the documention on the [CookieCutter](https://cook
 make create_environment
 ```
 ```bash
+# Activate the created environment
+conda activate venv-name
+```
+```bash
 # Install required packages
 make requirements
 ```
@@ -15,8 +19,9 @@ make requirements
 
 Make sure to have `Jupyter` installed on your machine, then use this code to create a kernel based on your `venv` (virtual environment)
 ```bash
-TODO
+python -m ipykernel install --user --name=venv-name
 ```
+Then, you can choose this as a kernel for the notebook in the GUI.
 
 ---
 
