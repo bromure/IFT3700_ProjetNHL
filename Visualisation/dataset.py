@@ -23,6 +23,13 @@ def main(
             logger.info("Something happened for iteration 5.")
     logger.success("Processing dataset complete.")
     # -----------------------------------------
+    '''
+    Setup heuristic:
+        1. Run script when opening project
+        2. Asks for (input_path)
+            i) if path is given, uses that path to load data locally
+            ii) if no path is given, defaults to downloading the data from API
+    '''
 
 
 if __name__ == "__main__":

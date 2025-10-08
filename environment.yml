@@ -16,6 +16,7 @@ dependencies:
   - scikit-learn
   - ruff
   - pytest
+  - setuptools
   - pip:
     - python-dotenv
     - mkdocs
