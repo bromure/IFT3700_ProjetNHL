@@ -1,5 +1,5 @@
 # VSCode
-.vscode/*
+.vscode*
 
 # Miniconda
 *.sh
@@ -7,11 +7,7 @@
 Miniconda3*
 
 # Data
-/data/*
-!/data/raw/
-!/data/processed/
-!/data/interim/
-!/data/external/
+data*
 
 # Mac OS-specific storage files
 .DS_Store
