@@ -2,7 +2,7 @@
 # GLOBALS                                                                       #
 #################################################################################
 
-PROJECT_NAME = IFT3700_PROJETNHL-1
+PROJECT_NAME = IFT3700_PROJETNHL
 PYTHON_VERSION = 3.13
 PYTHON_INTERPRETER = python
 
