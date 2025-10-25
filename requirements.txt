@@ -13,4 +13,7 @@ pytest
 python-dotenv
 mkdocs
 setuptools
+lxml
+ipwidgets
+ipympl
 -e .

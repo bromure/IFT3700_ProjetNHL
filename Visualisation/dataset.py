@@ -114,6 +114,37 @@ def get_data(input_path: str, gameID: str, download_url: str, missing_games: lis
     return file_path
 
 
+def get_n_game(year: int) -> int:
+    """
+    Function to get the total number of games in a single year
+
+    Args:
+        year(int) : First year of the NHL season (e.g., 2023 for the 2023-2024 season).
+    
+    Returns:
+        int : Number of games that year
+    """
+
+        # Amount of games per season  
+    match year:
+        case y if y >= 2022: # 32 team seasons
+            return 32*82 / 2 # 1312 games
+            
+        case 2020: # Covid shortened season
+            return 31*56 / 2 # 868 games
+        
+        case 2019: # Covid-cut season
+            return 1082  
+            
+        case y if y >= 2017: # 31 team seasons
+            return 31*82 / 2 # 1271 games
+        
+        case y if y >= 2000: # 30 team seasons
+            return 30*82 / 2 # 1230 games
+        case _:
+            logger.error("Year must be 2000 or later.")
+            raise ValueError()
+
 def get_yearly_data(year: int, download_url: str, missing_games: list[str], input_path: str = RAW_DATA_DIR, game_types: list[str] = ["02", "03"] ) -> Path:
     """
     Wrapper to get data for a specific year. Sets the API URL and file name.
@@ -147,26 +178,8 @@ def get_yearly_data(year: int, download_url: str, missing_games: list[str], inpu
     # We want to change the GAME_ID so that we can get all data for a given year
     
     
-    # Amount of games per season  
-    match year:
-        case y if y >= 2022: # 32 team seasons
-            games = 32*82 / 2 # 1312 games
-            
-        case 2020: # Covid shortened season
-            games = 31*56 / 2 # 868 games
-        
-        case 2019: # Covid-cut season
-            games = 1082  
-            
-        case y if y >= 2017: # 31 team seasons
-            games = 31*82 / 2 # 1271 games
-        
-        case y if y >= 2000: # 30 team seasons
-            games = 30*82 / 2 # 1230 games
-        case _:
-            logger.error("Year must be 2000 or later.")
-            raise ValueError()
-        
+    # Amount of games per season 
+    games = get_n_game(year)
     games = range(1, int(games)+1) # Game numbers start at 0001
     
     # Create/ensure year folder exists (for organization)
