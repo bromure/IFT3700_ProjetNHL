@@ -3,8 +3,6 @@ import ipywidgets as widgets
 from IPython.display import display, clear_output
 import matplotlib.pyplot as plt
 import matplotlib.image as img
-from matplotlib.figure import Figure
-from ipympl.backend_nbagg import FigureCanvas
 
 
 import Visualisation.dataset as dataset
@@ -279,8 +277,8 @@ def get_plot_title(play_data: dict, player_info: dict) -> str:
             pen_desc = play_data["details"]["descKey"].replace("-", " ")
             if "drawnByPlayerId" in play_data["details"]:
                 player_2 = get_name(play_data["details"]["drawnByPlayerId"], player_info)
-                return f"Pendalty: {player_1} {duration} minute {pen_type} for {pen_desc} against {player_2}"
-            return f"Pendalty: {player_1} {duration} minute {pen_type} for {pen_desc}"
+                return f"Penalty: {player_1} {duration} minute {pen_type} for {pen_desc} against {player_2}"
+            return f"Penalty: {player_1} {duration} minute {pen_type} for {pen_desc}"
         case "delayed-penalty":
             return f"Delayed penalty"
         case "stoppage":
