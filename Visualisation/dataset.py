@@ -16,11 +16,11 @@ def main(
     # ---- REPLACE DEFAULT PATHS AS APPROPRIATE ----
     input_path: Path = RAW_DATA_DIR,
     download_url: str = "https://api-web.nhle.com/v1/",
-    years: list[int] = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023]
+    years: list[int] = [2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]
     # ----------------------------------------------
 ):
     # ---- Base dowloader ----
-    load_data()
+    load_data(years = years)
     # -----------------------------------------
     
     '''

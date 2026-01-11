@@ -4,6 +4,7 @@ from IPython.display import display, clear_output
 import matplotlib.pyplot as plt
 import matplotlib.image as img
 
+
 import Visualisation.dataset as dataset
 
 def create_event_slider() -> None:
@@ -29,12 +30,14 @@ def create_event_slider() -> None:
             data = json.load(f)
 
         return data
+    
+    play_plot = widgets.Output()
 
     # Year choice
     slider_year = widgets.IntSlider(
         value = 2023,
         min = 2016,
-        max = 2023,
+        max = 2025,
         step = 1,
         description = "Year:"
     )
@@ -71,11 +74,16 @@ def create_event_slider() -> None:
         description = "Play:"
     )
 
-    point, fig, plt, title = plot_play(game_data["plays"][slider_play.value], game_data)
-
+    with play_plot:
+        canvas, point, title = plot_play(
+            game_data["plays"][slider_play.value - 1],
+            game_data
+        )
+        plt.show()
+    
     # Infos about the play
     play_info = widgets.HTML(
-        value = get_play_info(game_data["plays"][slider_play.value])
+        value = get_play_info(game_data["plays"][slider_play.value - 1])
     )
 
     def change_slider_game(change) -> None:
@@ -96,16 +104,18 @@ def create_event_slider() -> None:
 
     def change_play(change) -> None:
         """
-        Change the max value of slider_game to reflect the number of game of the selected year
+        Change the max value of slider_game to reflect the number of games of the selected year
         """
-        play_data = game_data["plays"][change['new']]
-        play_info.value = get_play_info(play_data)
+        play_data = game_data["plays"][change["new"] - 1]
         if get_coordinates(play_data) is not None:
             point.set_data(get_coordinates(play_data))
         else:
-            point.set_data(200, 200)    # Out of bound
+            point.set_data([200], [200])    # Out of bound
         title.set_text(get_plot_title(play_data, game_data["rosterSpots"]))
-        fig.canvas.draw_idle()
+        canvas.draw_idle()
+        
+        play_info.value = get_play_info(play_data)
+        
 
     # Observe
     slider_year.observe(change_slider_game, names = "value")
@@ -120,14 +130,14 @@ def create_event_slider() -> None:
     display(slider_game)
     display(game_info)
     display(slider_play)
-    plt.show()
+    display(play_plot)
     display(play_info)
 
     
 
 def get_game_id(year: int, is_playoff: bool, game_num: int) -> str:
     """
-    Gives the game id as NHL standart for a game
+    Gives the game id as NHL standard for a game
 
     args:
         year (int): First year of the NHL season (e.g., 2023 for the 2023-2024 season).
@@ -162,7 +172,7 @@ def get_game_info(game_data: dict) -> str:
 
     return description
 
-def plot_play(play_data: dict, game_data: dict) -> (object, object, object):
+def plot_play(play_data: dict, game_data: dict) -> tuple[object, object, object]:
     """
     Returns an image of a rink with a dot where the play was done
 
@@ -175,29 +185,29 @@ def plot_play(play_data: dict, game_data: dict) -> (object, object, object):
         fig : The graph that can be modified
         plt : The plot
     """
-    clear_output(wait = True)
 
     # Show image
     rink = img.imread("../reports/figures/nhl_rink.png")
     fig, ax = plt.subplots(figsize=(10, 6))
+    canvas = fig.canvas
     ax.imshow(rink, extent=[-100, 100, -42.5, 42.5], zorder = 0)
-    plt.gca().invert_yaxis()
+    ax.invert_yaxis()
     ax.set_xlim(-100, 100)
     ax.set_ylim(-42.5, 42.5)
     
-    
     # Show dot
-    if get_coordinates(play_data) is not None:
-        point, = ax.plot(get_coordinates(play_data)[0][0], get_coordinates(play_data)[1][0],
-                         "ro", color = "red", markersize = 10, zorder = 1)
+    coords = get_coordinates(play_data)
+    if coords is not None:
+        point, = ax.plot(coords[0], coords[1], 'yo',
+                         markersize = 10, zorder = 1)
     else:
-        point, = ax.plot(200, 200,
-                         "ro", color = "red", markersize = 10, zorder = 1)
+        point, = ax.plot([200], [200], 'yo',
+                         markersize = 10, zorder = 1)
 
     # Set title
     title = ax.set_title(get_plot_title(play_data, game_data["rosterSpots"]))
-
-    return point, fig, plt, title
+    
+    return canvas, point, title
 
 def get_plot_title(play_data: dict, player_info: dict) -> str:
     """
@@ -236,7 +246,7 @@ def get_plot_title(play_data: dict, player_info: dict) -> str:
             if "goalieInNetId" in play_data["details"]:
                 player_2 = get_name(play_data["details"]["goalieInNetId"], player_info)
             else:
-                player_2 = empty_net
+                player_2 = "Empty_net"
             return f"{player_1} shot misses on {player_2}"
         case "goal":
             player_1 = get_name(play_data["details"]["scoringPlayerId"], player_info)
@@ -267,8 +277,8 @@ def get_plot_title(play_data: dict, player_info: dict) -> str:
             pen_desc = play_data["details"]["descKey"].replace("-", " ")
             if "drawnByPlayerId" in play_data["details"]:
                 player_2 = get_name(play_data["details"]["drawnByPlayerId"], player_info)
-                return f"Pendalty: {player_1} {duration} minute {pen_type} for {pen_desc} against {player_2}"
-            return f"Pendalty: {player_1} {duration} minute {pen_type} for {pen_desc}"
+                return f"Penalty: {player_1} {duration} minute {pen_type} for {pen_desc} against {player_2}"
+            return f"Penalty: {player_1} {duration} minute {pen_type} for {pen_desc}"
         case "delayed-penalty":
             return f"Delayed penalty"
         case "stoppage":
@@ -279,7 +289,7 @@ def get_plot_title(play_data: dict, player_info: dict) -> str:
         case "game-end":
             return f"Game end"
 
-def get_coordinates(play_data: dict) -> (float, float):
+def get_coordinates(play_data: dict) -> list:
     """
     Returns the information about a specific play
 
@@ -291,7 +301,7 @@ def get_coordinates(play_data: dict) -> (float, float):
     """
     
     if "details" in play_data.keys() and "xCoord" in play_data["details"].keys() and "yCoord" in play_data["details"].keys():
-        return [play_data["details"]["xCoord"]], [play_data["details"]["yCoord"]]
+        return [[play_data["details"]["xCoord"]], [play_data["details"]["yCoord"]]]
     else:
         return None
 
